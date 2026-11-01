@@ -1,13 +1,13 @@
 (() => {
   'use strict';
-  const config = window.CAMPAIGN_CONFIG || {};
+  const config = {...(window.CAMPAIGN_CONFIG || {}), ...(window.CAMPAIGN_EXPERIENCE || {})};
   const $ = selector => document.querySelector(selector);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const safeUrl = value => { try { const url = new URL(value); return url.protocol === 'https:' ? url.href : null; } catch { return null; } };
   const formUrl = safeUrl(config.formUrl);
   if (!config.preview && formUrl) $('.preview').hidden = true;
   if (formUrl) $('#form-link').href = formUrl;
-  else { $('#form-link').textContent = 'Inscrições em breve'; $('#form-note').textContent = 'Prévia: formulário ainda não configurado.'; }
+  else { $('#form-link').hidden = true; }
 
   const features = ['Perto de você, em Teresina e Timon.', 'Combustível e conveniência no seu caminho.', 'Confiança e praticidade perto de você.'];
   let featureIndex = 0;
@@ -31,33 +31,43 @@
   updateCarousel();
 
   let soundEnabled = true;
-  let audioContext;
+  const giftAudio = $('#gift-audio');
+  const soundPath = config.soundUrl ?? 'assets/presente.mp3';
+  if (soundPath) {
+    try { const url = new URL(soundPath, document.baseURI); if (['http:', 'https:'].includes(url.protocol)) giftAudio.src = url.href; } catch {}
+  }
+  giftAudio.volume = Math.max(0, Math.min(1, Number.isFinite(config.soundVolume) ? config.soundVolume : .45));
   $('#sound').addEventListener('click', () => {
     soundEnabled = !soundEnabled;
     $('#sound').setAttribute('aria-pressed', String(soundEnabled));
     $('#sound span').textContent = soundEnabled ? 'Som ativado' : 'Som desativado';
+    if (!soundEnabled) giftAudio.pause();
   });
-  async function playChime() {
-    if (!soundEnabled) return;
+  function playChime() {
+    if (!soundEnabled || !giftAudio.getAttribute('src')) return;
+    giftAudio.currentTime = 0;
+    giftAudio.play().catch(() => {});
+  }
+  const frame = $('#campaign-form');
+  let frameStarted = false;
+  let frameTimer;
+  function embeddedUrl() {
     try {
-      const Audio = window.AudioContext || window.webkitAudioContext;
-      if (!Audio) return;
-      audioContext ||= new Audio();
-      await audioContext.resume();
-      if (!soundEnabled) return;
-      const now = audioContext.currentTime;
-      [783.99, 987.77, 1174.66, 1567.98].forEach((frequency, i) => {
-        const oscillator = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        oscillator.type = 'sine'; oscillator.frequency.value = frequency;
-        gain.gain.setValueAtTime(0, now + i * .13);
-        gain.gain.linearRampToValueAtTime(.075, now + i * .13 + .012);
-        gain.gain.exponentialRampToValueAtTime(.001, now + i * .13 + 1.1);
-        oscillator.connect(gain); gain.connect(audioContext.destination);
-        oscillator.start(now + i * .13); oscillator.stop(now + i * .13 + 1.2);
-        oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
-      });
-    } catch { /* O restante da experiência funciona sem áudio. */ }
+      const url = new URL(config.formEmbedUrl || formUrl);
+      if (url.protocol !== 'https:' || url.hostname !== 'docs.google.com' || !/^\/forms\/(?:u\/\d+\/)?d\/(?:e\/)?[^/]+\/viewform$/.test(url.pathname)) return null;
+      url.searchParams.set('embedded','true');
+      return url.href;
+    } catch { return null; }
+  }
+  function loadForm() {
+    if (frameStarted) return;
+    const src = embeddedUrl();
+    if (!src) { $('#form-status').hidden = true; $('#form-pending').hidden = false; return; }
+    frameStarted = true;
+    frame.hidden = false;
+    frame.addEventListener('load', () => { clearTimeout(frameTimer); $('#form-status').hidden = true; });
+    frame.src = src;
+    frameTimer = setTimeout(() => { $('#form-status').textContent = 'Se o formulário não aparecer, use o link abaixo para abri-lo em outra aba.'; },10000);
   }
   const messages = [
     'Que a esperança acompanhe cada novo caminho.',
@@ -87,9 +97,9 @@
     }
     $('#christmas-message').textContent = messages[Number(button.dataset.gift)];
     $('#form-pending').hidden = true;
-    setTimeout(() => { reveal.showModal(); opening = false; }, reducedMotion.matches ? 0 : 650);
+    setTimeout(() => { reveal.showModal(); document.body.classList.add('dialog-open'); loadForm(); opening = false; }, reducedMotion.matches ? 0 : 180);
   }));
-  reveal.addEventListener('close', () => { lastGift?.classList.remove('open'); lastGift?.focus(); });
+  reveal.addEventListener('close', () => { document.body.classList.remove('dialog-open'); giftAudio.pause(); lastGift?.classList.remove('open'); lastGift?.focus({preventScroll:true}); });
   reveal.querySelectorAll('.close,.back').forEach(button => button.addEventListener('click', () => reveal.close()));
   $('#form-link').addEventListener('click', event => {
     if (!formUrl) { event.preventDefault(); $('#form-pending').hidden = false; }
