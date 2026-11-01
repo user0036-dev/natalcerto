@@ -109,3 +109,19 @@
   info.querySelectorAll('.close,.close-info').forEach(button => button.addEventListener('click', () => info.close()));
 })();
 
+
+/* Rodapé acompanha as configurações reais da campanha. */
+(() => {
+  const config = window.CAMPAIGN_CONFIG || {};
+  const keys = {regulamento: 'regulationUrl', privacidade: 'privacyUrl', contato: 'contactUrl'};
+  const validLink = value => { try { return new URL(value).protocol === 'https:'; } catch { return false; } };
+  const footer = document.querySelector('.footer');
+  if (!footer) return;
+  footer.querySelectorAll('[data-info]').forEach(button => {
+    button.hidden = !validLink(config[keys[button.dataset.info]]);
+  });
+  const nav = footer.querySelector('nav');
+  if (nav) nav.hidden = !nav.querySelector('[data-info]:not([hidden])');
+  const note = footer.querySelector('small');
+  if (note) note.hidden = !config.preview;
+})();
