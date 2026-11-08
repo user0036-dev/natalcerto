@@ -54,14 +54,20 @@
         <p id="christmas-message" class="christmas-message"></p>
         <h2 id="reveal-title">Concorra a um <em>tanque cheio!</em></h2>
         <p>Para completar o tanque, limitado a <strong>50 litros.</strong></p>
-        <p class="reveal-description">Preencha seus dados abaixo para participar.</p>
+        <p class="reveal-description">Leia a autorização abaixo para continuar sua inscrição.</p>
       </header>
-      <div class="form-area"><p id="form-status" role="status">Carregando formulário…</p><iframe id="campaign-form" title="Formulário de participação — Natal Rede Certo" referrerpolicy="strict-origin-when-cross-origin" hidden></iframe><p id="form-pending" hidden>O formulário será disponibilizado em breve.</p></div>
-      <div class="reveal-actions"><a id="form-link" href="#" target="_blank" rel="noopener noreferrer">Abrir formulário em outra aba ↗</a><button class="back">Voltar aos presentes</button></div>
+      <section class="consent-box" aria-labelledby="consent-title">
+        <h3 id="consent-title">Autorização para participar</h3>
+        <p id="consent-description">A Rede Certo utilizará seu nome e telefone para registrar sua inscrição, verificar participações repetidas, realizar o sorteio e entrar em contato caso você seja sorteado. O nome do vencedor poderá ser divulgado na apresentação do resultado.</p>
+        <label class="consent-choice" for="data-consent"><input id="data-consent" type="checkbox" aria-describedby="consent-description consent-hint" aria-controls="participation-form"><span>Li e autorizo o uso dos meus dados para essas finalidades.</span></label>
+        <p id="consent-hint" class="consent-hint" role="status">Marque a caixa para liberar o formulário de participação.</p>
+      </section>
+      <div class="form-area" id="participation-form" hidden><p id="form-status" role="status">Carregando formulário…</p><iframe id="campaign-form" title="Formulário de participação — Natal Rede Certo" referrerpolicy="strict-origin-when-cross-origin" hidden></iframe><p id="form-pending" hidden>O formulário será disponibilizado em breve.</p></div>
+      <div class="reveal-actions"><a id="form-link" hidden href="#" target="_blank" rel="noopener noreferrer">Abrir formulário em outra aba ↗</a><button class="back">Voltar aos presentes</button></div>
     </div>
   </dialog>
   <dialog id="info" aria-labelledby="info-title"><div class="info-inner"><button class="close" aria-label="Fechar">×</button><p class="eyebrow">REDE CERTO · NATAL</p><h2 id="info-title"></h2><p id="info-text"></p><button class="primary close-info">Entendi</button></div></dialog>
-  <noscript><p class="noscript">Ative o JavaScript para abrir os presentes. Para participar, <a href="https://docs.google.com/forms/d/e/1FAIpQLSeCuBkUqrghtKFSPiqZz4WVltI6mmLPAdq-IJ7v57E7uD28Cw/viewform">abra o formulário da campanha</a>.</p></noscript>
+  <noscript><p class="noscript">Ative o JavaScript para ler a autorização e acessar o formulário da campanha.</p></noscript>
   <audio id="gift-audio" preload="none"></audio>
 </body>
 </html>
