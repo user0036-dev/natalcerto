@@ -175,3 +175,28 @@
 .consent-box .consent-hint{font-size:14px;margin:14px 0 0;color:#edcb83}
 #participation-form[hidden],#form-link[hidden]{display:none!important}
 @media(max-width:600px){.consent-box{padding:18px 16px}.consent-box h3{font-size:20px}.consent-choice{padding:12px;gap:12px}}
+
+/* Prêmio em destaque, com leitura confortável no celular. */
+#reveal .reveal-inner{overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+#reveal .reveal-header{padding:30px 28px 22px;background:radial-gradient(ellipse at 50% 45%,#edcb831a,transparent 70%),#06162c}
+#reveal #reveal-title{margin:16px 0 14px;line-height:1;text-align:center;font-family:Arial,Helvetica,sans-serif;letter-spacing:0}
+#reveal .prize-invitation{display:block;font-size:clamp(17px,2.4vw,23px);font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#faf7ee;margin-bottom:12px}
+#reveal .prize-headline{display:block;font-size:clamp(46px,10vw,78px);line-height:.94;font-weight:900;letter-spacing:-.035em;color:#edcb83;text-shadow:0 3px 20px #edcb8325}
+#reveal .reveal-header .prize-limit{font-size:14px;line-height:1.5;color:#d6dfeb}
+#reveal .prize-limit>strong{display:inline-block;margin-top:11px;padding:7px 16px;border:1px solid #edcb8380;border-radius:8px;background:#edcb830c;color:#edcb83;font:700 12px/1.5 Arial,sans-serif;letter-spacing:.06em}
+#reveal .prize-limit b{font-size:22px;letter-spacing:0;margin-left:5px}
+#reveal .reveal-header .reveal-description{margin-top:16px!important;font-size:13px;color:#bac4d2!important}
+#reveal .christmas-message{padding-inline:22px;color:#bac4d2;font-size:12px}
+#reveal .consent-box{flex-shrink:0;margin:18px 20px 22px}
+#reveal .form-area{flex:0 0 auto;min-height:620px}
+#reveal #campaign-form{flex:none;height:650px;min-height:650px}
+#reveal .reveal-actions{margin-top:auto}
+@media(max-width:600px){
+ #reveal .reveal-header{padding:28px 20px 20px}
+ #reveal .prize-headline{font-size:clamp(46px,15vw,70px)}
+ #reveal .prize-invitation{font-size:17px;letter-spacing:.1em}
+ #reveal .christmas-message{font-size:11px;padding-inline:18px}
+ #reveal .consent-box{margin:16px 12px}
+ #reveal .prize-limit>strong{padding:6px 12px}
+ #reveal .prize-limit b{font-size:21px}
+}
